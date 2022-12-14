@@ -7,25 +7,15 @@ import com.maxdev.warehouse.repo.CredentialsRepository;
 import com.maxdev.warehouse.repo.UsercardsRepository;
 import jakarta.transaction.Transactional;
 import org.apache.tomcat.websocket.AuthenticationException;
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.salt.SaltGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
-import org.jasypt.util.password.BasicPasswordEncryptor;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
 
 @Component(value="Manager")
@@ -36,11 +26,13 @@ public class AuthManager {
     UsercardsRepository ucr;
     public Random rnd;
     private StandardPBEStringEncryptor enc;
-    private Cipher cipher;
-    private SecretKeySpec key;
-    private IvParameterSpec ivps;
-    private Charset utf = StandardCharsets.ISO_8859_1;
+    private HashMap<String, Authentication> sessionsTable;
+    private int selfCleanerTimer;
+
     public void init(){
+        selfCleanerTimer = 1023;
+        sessionsTable = new HashMap<String, Authentication>();
+//        sessionsTable.add();
         rnd = new Random();
         enc = new StandardPBEStringEncryptor();
         enc.setPassword(cr.findById(1).get().getEmail());
@@ -58,19 +50,12 @@ public class AuthManager {
         enc.setSaltGenerator(sg);
         enc.initialize();
 
-//        try {
-//            cipher = Cipher.getInstance("AES/CBC/NoPadding");
-//            key = new SecretKeySpec(cr.findById(1).get().getEmail().getBytes(StandardCharsets.UTF_8),"AES");
-//            ivps = new IvParameterSpec(new byte[16]);
-////            String m = cr.findById(9).get().getEmail();
-////            m = decrypt(m,key);
-////            System.out.println(m);
-//        } catch (NoSuchAlgorithmException | NoSuchPaddingException /*| IllegalBlockSizeException | BadPaddingException | InvalidKeyException*/ e) {
-//            e.printStackTrace();
-//        }
-
-
     }
+public Authentication checkSession(String remoteAddress){
+        if(--selfCleanerTimer==0)
+            selfClean();
+        return sessionsTable.get(remoteAddress);
+}
 
 
     public static String generateString(Random rng, String characters, int length)
@@ -98,30 +83,7 @@ public class AuthManager {
         }
         return Hashing.sha256().hashString(prepared, StandardCharsets.UTF_8).toString();
     }
-    public String encrypt(String source, Key key) {
-        try {
-            this.cipher.init(Cipher.ENCRYPT_MODE,key, ivps);
-            byte[] sb = new byte[64];
-            for(int i = 0; i<source.length(); ++i){
-                sb[i]= (byte) source.charAt(i);
-            }
-            sb =  cipher.doFinal(sb);
-            System.out.println(sb);
-            return new String(sb,0,64,utf);
-        } catch (IllegalBlockSizeException | BadPaddingException | InvalidKeyException | InvalidAlgorithmParameterException  e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    public String decrypt(String code, Key key) {
-        try {
-            this.cipher.init(Cipher.DECRYPT_MODE,key,ivps);
-            return new String(cipher.doFinal(code.getBytes(utf)), utf).trim();
-        } catch (IllegalBlockSizeException | BadPaddingException | InvalidKeyException | InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+
     public boolean validPwd(String unhashed){
 
         if (unhashed.length()<4)
@@ -155,6 +117,12 @@ public class AuthManager {
     }
 
     public Authentication login(Authentication oldVar) throws AuthenticationException {
+        if(--selfCleanerTimer==0)
+            selfClean();
+        Authentication newVar = sessionsTable.get(oldVar.getRemoteAddr());
+        if(newVar!=null&& newVar.isActual()) {
+            return newVar;
+        }
         Credential c = cr.findCredentialByEmail(enc.encrypt(oldVar.getLogin()));
         if(c==null) throw new AuthenticationException("Incorrect login") {
             @Override
@@ -171,10 +139,15 @@ public class AuthManager {
             }
         };
         System.out.println(c.getEmail()+" just logged in!");
-        return new Authentication(oldVar.getLogin(),oldVar.getPwd()).setValidWithRoles(c.getUsercard().getRoles());
+        newVar = new Authentication(oldVar.getLogin(), oldVar.getPwd(),oldVar.getRemoteAddr()).setValidWithRoles(c.getUsercard().getRoles());
+        sessionsTable.put(newVar.getRemoteAddr(),newVar);
+        return newVar;
     }
     @Transactional
     public Authentication signup(Authentication oldVar) throws AuthenticationException{
+        if(--selfCleanerTimer==0)
+            selfClean();
+        Authentication newVar = null;
         Credential c = cr.findCredentialByEmail(enc.encrypt(oldVar.getLogin()));
         if(c!=null) throw new AuthenticationException("User with this email already exists") {
             @Override
@@ -203,6 +176,19 @@ public class AuthManager {
         c.setPwd(hash(oldVar.getPwd(),c.getSalt(),c.getSaltmode()));
         c.setUsercard(uc);
         cr.save(c);
-        return new Authentication(oldVar.getLogin(), oldVar.getPwd()).setValidWithRoles("AB--");
+        newVar = new Authentication(oldVar.getLogin(), oldVar.getPwd(), oldVar.getRemoteAddr()).setValidWithRoles("AB--");
+        sessionsTable.put(newVar.getRemoteAddr(),newVar);
+        return newVar;
     }
+    private void selfClean(){
+        Iterator<Map.Entry<String, Authentication>> it = sessionsTable.entrySet().iterator();
+        while(it.hasNext()){
+            Authentication a = (Authentication) it.next();
+            if(!a.isActual()){
+                it.remove();
+            }
+        }
+        selfCleanerTimer = 1024;
+    }
+
 }

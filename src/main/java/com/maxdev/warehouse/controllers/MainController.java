@@ -7,27 +7,18 @@ import com.maxdev.warehouse.repo.UsercardsRepository;
 import com.maxdev.warehouse.security.AuthManager;
 import com.maxdev.warehouse.security.Authentication;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.java.Log;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.logging.Logger;
 
 @Controller
 public class MainController {
@@ -52,12 +43,12 @@ public class MainController {
 
     //http://localhost:8080/auth?email=yew%40ya.ru&pwd=werwe
 
-    @GetMapping("/{p}")
-    public String home(Model model) {
-        model.addAttribute("title", "main page");
-        System.out.println("atHome");
-        return "home";
-    }
+//    @GetMapping("/{p}")
+//    public String home(Model model) {
+//        model.addAttribute("title", "main page");
+//        System.out.println("atHome");
+//        return "home";
+//    }
 
     @PostMapping("/auth")
     public String auth(@RequestParam(value="email") String user, @RequestParam(value="pwd") String password, @RequestParam(value="m") String mode,
@@ -67,7 +58,7 @@ public class MainController {
         System.out.println(user + " : " + password + " : " + mode+ " : "+request.getRemoteAddr());
 //        Authentication auth;
 //        AuthenticationManager
-        Authentication authentication = new Authentication(user,password);
+        Authentication authentication = new Authentication(user,password,request.getRemoteAddr());
         try {
             if(mode.equals("sign up")){
                 authentication = authManager.signup(authentication);
@@ -76,6 +67,11 @@ public class MainController {
             }
         }catch (AuthenticationException e){
             System.err.println(">> "+e.getMessage());
+            model.addAttribute("error",e.getMessage());
+            if(mode.equals("sign up"))
+                return signup(model);
+            else
+                return login(model);
         }
         model.addAttribute("link","http://localhost:8080/app");
 
@@ -87,6 +83,8 @@ public class MainController {
         model.addAttribute("text", "log in");
         model.addAttribute("link", "/signup");
         model.addAttribute("ltext", "sign up");
+        if(!model.containsAttribute("error"))
+            model.addAttribute("error","");
         System.out.println("atLogin");
         return "auth";
     }
@@ -96,6 +94,7 @@ public class MainController {
         model.addAttribute("text", "sign up");
         model.addAttribute("link", "/login");
         model.addAttribute("ltext", "log in");
+        model.addAttribute("error","");
         System.out.println("atSignup");
         return "auth";
     }

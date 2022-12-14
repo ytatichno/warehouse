@@ -13,6 +13,13 @@ public class Good {
     private String name, descr;
     private int totalnumber;
 
+    public Good() {}
+    public Good(int _totalnumber, String _name, String _descr){
+        totalnumber = _totalnumber;
+        name = _name;
+        descr = _descr;
+    }
+
     public Integer getId() {
         return id;
     }

@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-public class Incoming {
+public class Incoming implements LogEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -21,10 +21,21 @@ public class Incoming {
 
     @OneToOne
     @JoinColumn(name="good")
-    private Rack good;
+    private Good good;
 
     private Integer number;
     private Boolean satisfied;
+
+    public Incoming(){}
+    public Incoming(Usercard _usercard, Timestamp _datetime, Rack _rack, Good _good, Integer _number, Boolean _satisfied){
+        usercard=_usercard;
+        datetime=_datetime;
+        rack=_rack;
+        good=_good;
+        number=_number;
+        satisfied=_satisfied;
+
+    }
 
     public Integer getId() {
         return id;
@@ -58,11 +69,11 @@ public class Incoming {
         this.rack = rack;
     }
 
-    public Rack getGood() {
+    public Good getGood() {
         return good;
     }
 
-    public void setGood(Rack good) {
+    public void setGood(Good good) {
         this.good = good;
     }
 

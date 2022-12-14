@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 @EnableJpaRepositories
 @SpringBootApplication
+//@OpenAPIDefinition(info = @Info(title = "Warehouse API",version = "0.1.0"))
 public class WarehouseApplication {
 
 	public static void main(String[] args) {
