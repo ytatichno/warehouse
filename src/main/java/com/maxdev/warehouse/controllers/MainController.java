@@ -73,7 +73,7 @@ public class MainController {
             else
                 return login(model);
         }
-        model.addAttribute("link","http://localhost:8080/app");
+        model.addAttribute("link","http://localhost:3000/app");
 
         return "redirect";
     }

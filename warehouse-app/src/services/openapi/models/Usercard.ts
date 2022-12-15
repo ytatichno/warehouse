@@ -9,3 +9,6 @@ export type Usercard = {
     birthday?: string;
     roles?: string;
 };
+export function usercardToString(el:Usercard){
+    return el.id + " : " + el.lastname + " : " + el.firstname;
+}

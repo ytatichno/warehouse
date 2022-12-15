@@ -10,3 +10,7 @@ export type Rack = {
     good?: Good;
     number?: number;
 };
+export function rackToString(el:Rack){
+    const goodField =(!!el.good && "name" in el.good)?el.good.name:'null';
+    return el.id + " : " + el.addr + " : " + goodField + " : " + el.number;
+}

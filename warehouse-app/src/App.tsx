@@ -2,11 +2,20 @@ import React from 'react';
 import logo from './logo.svg';
 import { Counter } from './features/counter/Counter';
 import './App.css';
+import { getModeForUsageLocation } from 'typescript';
+import { AppControllerService, Good, Rack, Usercard } from './services/openapi';
+import { List } from './components/UI/List/List';
+
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
+        <div>
+          <List<Good> title="Goods" content={AppControllerService.goods()} />
+          <List<Usercard> title="Profiles" content={AppControllerService.profiles()} />
+          <List<Rack> title="Racks" content={AppControllerService.racks()}/>
+        </div>
         <img src={logo} className="App-logo" alt="logo" />
         <Counter />
         <p>

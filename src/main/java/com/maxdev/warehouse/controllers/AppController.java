@@ -30,6 +30,7 @@ import java.util.List;
  */
 
 @RestController
+@CrossOrigin
 @RequestMapping("/app")
 @Tag(name = "AppController", description = "Rest controller on warehouse manager project")
 public class AppController {
@@ -128,6 +129,7 @@ public class AppController {
     @GetMapping("/goods")
     @Operation(description = "Getting all goods information")
     public List<Good> goods(HttpServletRequest request) {
+        System.out.println("trying");
         String ra = request.getRemoteAddr();
         Authentication auth = authManager.checkSession(ra);
         if (auth != null) {
