@@ -1,5 +1,20 @@
-.App {
-  text-align: center;
+
+
+.LightApp {
+  /* text-align: center; */
+  /* background-image: var(--background-image); */
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svgjs='http://svgjs.com/svgjs' width='1920' height='1080' preserveAspectRatio='none' viewBox='0 0 1920 1080'%3e%3cg mask='url(%26quot%3b%23SvgjsMask1455%26quot%3b)' fill='none'%3e%3crect width='1920' height='1080' x='0' y='0' fill='url(%23SvgjsLinearGradient1456)'%3e%3c/rect%3e%3cpath d='M35 1080L1115 0L2010.5 0L930.5 1080z' fill='url(%23SvgjsLinearGradient1457)'%3e%3c/path%3e%3cpath d='M714.6 1080L1794.6 0L2727.6 0L1647.6 1080z' fill='url(%23SvgjsLinearGradient1457)'%3e%3c/path%3e%3cpath d='M1850 1080L770 0L206 0L1286 1080z' fill='url(%23SvgjsLinearGradient1458)'%3e%3c/path%3e%3cpath d='M1176.4 1080L96.40000000000009 0L-688.0999999999999 0L391.9000000000001 1080z' fill='url(%23SvgjsLinearGradient1458)'%3e%3c/path%3e%3cpath d='M1289.2859818636387 1080L1920 449.28598186363865L1920 1080z' fill='url(%23SvgjsLinearGradient1457)'%3e%3c/path%3e%3cpath d='M0 1080L630.7140181363613 1080L 0 449.28598186363865z' fill='url(%23SvgjsLinearGradient1458)'%3e%3c/path%3e%3c/g%3e%3cdefs%3e%3cmask id='SvgjsMask1455'%3e%3crect width='1920' height='1080' fill='white'%3e%3c/rect%3e%3c/mask%3e%3clinearGradient x1='89.06%25' y1='119.44%25' x2='10.94%25' y2='-19.44%25' gradientUnits='userSpaceOnUse' id='SvgjsLinearGradient1456'%3e%3cstop stop-color='rgba(218%2c 217%2c 105%2c 1)' offset='0'%3e%3c/stop%3e%3cstop stop-color='rgba(255%2c 193%2c 7%2c 1)' offset='1'%3e%3c/stop%3e%3c/linearGradient%3e%3clinearGradient x1='0%25' y1='100%25' x2='100%25' y2='0%25' id='SvgjsLinearGradient1457'%3e%3cstop stop-color='rgba(15%2c 70%2c 185%2c 0.2)' offset='0'%3e%3c/stop%3e%3cstop stop-opacity='0' stop-color='rgba(15%2c 70%2c 185%2c 0.2)' offset='0.66'%3e%3c/stop%3e%3c/linearGradient%3e%3clinearGradient x1='100%25' y1='100%25' x2='0%25' y2='0%25' id='SvgjsLinearGradient1458'%3e%3cstop stop-color='rgba(15%2c 70%2c 185%2c 0.2)' offset='0'%3e%3c/stop%3e%3cstop stop-opacity='0' stop-color='rgba(15%2c 70%2c 185%2c 0.2)' offset='0.66'%3e%3c/stop%3e%3c/linearGradient%3e%3c/defs%3e%3c/svg%3e");
+
+}
+.DarkApp{
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svgjs='http://svgjs.com/svgjs' width='1920' height='1080' preserveAspectRatio='none' viewBox='0 0 1920 1080'%3e%3cg mask='url(%26quot%3b%23SvgjsMask1943%26quot%3b)' fill='none'%3e%3crect width='1920' height='1080' x='0' y='0' fill='url(%23SvgjsLinearGradient1944)'%3e%3c/rect%3e%3cpath d='M35 1080L1115 0L2010.5 0L930.5 1080z' fill='url(%23SvgjsLinearGradient1945)'%3e%3c/path%3e%3cpath d='M714.6 1080L1794.6 0L2727.6 0L1647.6 1080z' fill='url(%23SvgjsLinearGradient1945)'%3e%3c/path%3e%3cpath d='M1850 1080L770 0L206 0L1286 1080z' fill='url(%23SvgjsLinearGradient1946)'%3e%3c/path%3e%3cpath d='M1176.4 1080L96.40000000000009 0L-688.0999999999999 0L391.9000000000001 1080z' fill='url(%23SvgjsLinearGradient1946)'%3e%3c/path%3e%3cpath d='M1289.2859818636387 1080L1920 449.28598186363865L1920 1080z' fill='url(%23SvgjsLinearGradient1945)'%3e%3c/path%3e%3cpath d='M0 1080L630.7140181363613 1080L 0 449.28598186363865z' fill='url(%23SvgjsLinearGradient1946)'%3e%3c/path%3e%3c/g%3e%3cdefs%3e%3cmask id='SvgjsMask1943'%3e%3crect width='1920' height='1080' fill='white'%3e%3c/rect%3e%3c/mask%3e%3clinearGradient x1='89.06%25' y1='119.44%25' x2='10.94%25' y2='-19.44%25' gradientUnits='userSpaceOnUse' id='SvgjsLinearGradient1944'%3e%3cstop stop-color='rgba(141%2c 35%2c 164%2c 1)' offset='0'%3e%3c/stop%3e%3cstop stop-color='rgba(100%2c 75%2c 0%2c 1)' offset='1'%3e%3c/stop%3e%3c/linearGradient%3e%3clinearGradient x1='0%25' y1='100%25' x2='100%25' y2='0%25' id='SvgjsLinearGradient1945'%3e%3cstop stop-color='rgba(15%2c 70%2c 185%2c 0.2)' offset='0'%3e%3c/stop%3e%3cstop stop-opacity='0' stop-color='rgba(15%2c 70%2c 185%2c 0.2)' offset='0.66'%3e%3c/stop%3e%3c/linearGradient%3e%3clinearGradient x1='100%25' y1='100%25' x2='0%25' y2='0%25' id='SvgjsLinearGradient1946'%3e%3cstop stop-color='rgba(15%2c 70%2c 185%2c 0.2)' offset='0'%3e%3c/stop%3e%3cstop stop-opacity='0' stop-color='rgba(15%2c 70%2c 185%2c 0.2)' offset='0.66'%3e%3c/stop%3e%3c/linearGradient%3e%3c/defs%3e%3c/svg%3e");
+
+}
+.LightText{
+  color: black
+}
+.DarkText{
+  color: antiquewhite
 }
 
 .App-logo {
@@ -31,9 +46,68 @@
     transform: translateY(0);
   }
   50% {
-    transform: translateY(10px);
+    transform: translateY(-100px);
   }
   100% {
     transform: translateY(0px);
   }
+}
+
+@keyframes fade-in{
+  0%{
+    opacity: 0;
+    transform: translateY(200px);
+  }
+  75%{
+    opacity: 1;
+    /* transform: translateY(-200px); */
+  }
+}
+@keyframes fade-out{
+  0%{
+    opacity: 1;
+    transform: translateY(0);
+  }
+  75%{
+    opacity: 0;
+    
+  }
+  100%{
+    opacity: 0;
+    transform: translateY(200px);
+  }
+}
+
+/* .panel-enter{
+  opacity: 0;
+  transform: scale(0.9);
+} */
+.panel-enter-active{
+  /* opacity: 1;
+  transform: translateY(30);
+  transition: opacity 300ms, transform 300ms; */
+  animation: fade-in 1s forwards;
+}
+.panel-exit-active{
+  /* opacity: 1;
+  transform: translateY(30);
+  transition: opacity 300ms, transform 300ms; */
+  animation: fade-out 1s forwards;
+}
+.alert-enter {
+  opacity: 0;
+  transform: scale(0.9);
+}
+.alert-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 300ms, transform 300ms;
+}
+.alert-exit {
+  opacity: 1;
+}
+.alert-exit-active {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 300ms, transform 300ms;
 }
