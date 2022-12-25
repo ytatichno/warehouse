@@ -183,12 +183,16 @@ public Authentication checkSession(String remoteAddress){
     private void selfClean(){
         Iterator<Map.Entry<String, Authentication>> it = sessionsTable.entrySet().iterator();
         while(it.hasNext()){
-            Authentication a = (Authentication) it.next();
+            Map.Entry<String,Authentication> me = (Map.Entry<String,Authentication>) it.next();
+            Authentication a = me.getValue();
             if(!a.isActual()){
                 it.remove();
             }
         }
         selfCleanerTimer = 1024;
+    }
+    public String encrypt(String email){
+        return enc.encrypt(email);
     }
 
 }
