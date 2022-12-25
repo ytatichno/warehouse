@@ -43,12 +43,12 @@ public class MainController {
 
     //http://localhost:8080/auth?email=yew%40ya.ru&pwd=werwe
 
-//    @GetMapping("/{p}")
-//    public String home(Model model) {
-//        model.addAttribute("title", "main page");
-//        System.out.println("atHome");
-//        return "home";
-//    }
+    @GetMapping("/{p}")
+    public String home(Model model) {
+        model.addAttribute("title", "main page");
+        System.out.println("atHome");
+        return "home";
+    }
 
     @PostMapping("/auth")
     public String auth(@RequestParam(value="email") String user, @RequestParam(value="pwd") String password, @RequestParam(value="m") String mode,

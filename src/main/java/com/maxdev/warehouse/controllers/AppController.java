@@ -57,7 +57,7 @@ public class AppController {
         Authentication auth = authManager.checkSession(ra);
         if (auth != null)
             return cr.findCredentialByEmail(
-                    auth.getLogin()
+                    authManager.encrypt(auth.getLogin())
             ).getUsercard();
         else
             throw new AccessDeniedException("get profile information", true);
@@ -70,7 +70,7 @@ public class AppController {
         Authentication auth = authManager.checkSession(ra);
         if (auth != null) {
             Usercard uc = cr.findCredentialByEmail(
-                    auth.getLogin()
+                    authManager.encrypt(auth.getLogin())
             ).getUsercard();
             uc.setLastname(usercard.getLastname());
             uc.setFirstname(usercard.getFirstname());
@@ -129,7 +129,6 @@ public class AppController {
     @GetMapping("/goods")
     @Operation(description = "Getting all goods information")
     public List<Good> goods(HttpServletRequest request) {
-        System.out.println("trying");
         String ra = request.getRemoteAddr();
         Authentication auth = authManager.checkSession(ra);
         if (auth != null) {
@@ -151,20 +150,25 @@ public class AppController {
         }
     }
 
-    @PostMapping("/good-info/{id}")
-    @Operation(summary = "DEPRECATED!Manual adding good in goods table")
-    public Good newGood(@RequestBody Good newGood, @PathVariable Integer id, HttpServletRequest request) {
+    @PostMapping("/good-info")
+    @Operation(summary = "Adding new good in goods table, fields totalNumber and id will be ignored")
+    public Good newGood(@RequestBody Good newGood, HttpServletRequest request) {
         String ra = request.getRemoteAddr();
         Authentication auth = authManager.checkSession(ra);
         if (auth != null && auth.getRole().charAt(1) == 'B') {
-            return gr.findById(id)
-                    .map(good -> {
-                        good.setName(newGood.getName());
-                        good.setDescr(newGood.getDescr());
-                        good.setTotalnumber(newGood.getTotalnumber());
-                        return gr.save(good);
-                    })
-                    .orElseThrow(() -> new NotFindException("goods with this id"));
+            Good good = new Good();
+            good.setName(newGood.getName());
+            good.setDescr(newGood.getDescr());
+            good.setTotalnumber(0);
+            return  gr.save(good);
+//            return gr.findById(id)
+//                    .map(good -> {
+//                        good.setName(newGood.getName());
+//                        good.setDescr(newGood.getDescr());
+//                        good.setTotalnumber(newGood.getTotalnumber());
+//                        return gr.save(good);
+//                    })
+//                    .orElseThrow(() -> new NotFindException("goods with this id"));
         } else {
             throw new AccessDeniedException("add good's information", auth == null);
         }
@@ -173,10 +177,12 @@ public class AppController {
 
     @PutMapping("/good-info/{id}")
     @Operation(summary = "DEPRECATED!Manual changing good in goods table")
-    public Good changeGood(@RequestBody Good newGood, @PathVariable Integer id, HttpServletRequest request) {
+    public Good changeGood(@RequestBody Good newGood,@PathVariable Integer id, HttpServletRequest request) {
         String ra = request.getRemoteAddr();
         Authentication auth = authManager.checkSession(ra);
         if (auth != null && auth.getRole().charAt(1) == 'B') {
+//            Good preparedGood = new Good(0,newGood.getName(),newGood.getDescr());
+//            return gr.save(preparedGood);
             return gr.findById(id)
                     .map(good -> {
                         good.setName(newGood.getName());
@@ -215,7 +221,7 @@ public class AppController {
             int number = _number;
             if (number > good.getTotalnumber()) {
                 or.save(new Outcoming(  //make record that query unsatisfied
-                        cr.findCredentialByEmail(auth.getLogin()).getUsercard(),
+                        cr.findCredentialByEmail(authManager.encrypt(auth.getLogin())).getUsercard(),
                         new Timestamp(System.currentTimeMillis()),
                         null,
                         good,
@@ -233,7 +239,7 @@ public class AppController {
                         good.setTotalnumber(good.getTotalnumber() - number);
                         gr.save(good);
                         or.save(new Outcoming(  //make record that query satisfied
-                                cr.findCredentialByEmail(auth.getLogin()).getUsercard(),
+                                cr.findCredentialByEmail(authManager.encrypt(auth.getLogin())).getUsercard(),
                                 new Timestamp(System.currentTimeMillis()),
                                 rack,
                                 good,
@@ -247,7 +253,7 @@ public class AppController {
                         good.setTotalnumber(good.getTotalnumber()-rackNumber);
                         number-=rackNumber;
                         or.save(new Outcoming(  //make record that query satisfied
-                                cr.findCredentialByEmail(auth.getLogin()).getUsercard(),
+                                cr.findCredentialByEmail(authManager.encrypt(auth.getLogin())).getUsercard(),
                                 new Timestamp(System.currentTimeMillis()),
                                 rack,
                                 good,
@@ -281,9 +287,15 @@ public class AppController {
         String ra = request.getRemoteAddr();
         Authentication auth = authManager.checkSession(ra);
         if (auth != null && auth.getRole().charAt(1)=='B') {
-            Rack rack = new Rack();
-            rack.setAddr(addr);
-            rr.save(rack);
+            if(rr.findAllByAddr(addr)==null){
+                Rack rack = new Rack();
+                rack.setAddr(addr);
+                rr.save(rack);
+            }
+            else{
+                throw new UnsafeOperationException("Make sure that rack you want to add has unique address");
+            }
+
         }else {
             throw new AccessDeniedException("set up new rack", auth == null);
         }
@@ -305,12 +317,22 @@ public class AppController {
         }
     }
     @GetMapping("/racks/{id}")
-    @Operation(summary = "get info about all racks binded on good with id")
+    @Operation(summary = "get info about all racks binded on good with id and all empty racks if good hasn't binded racks")
     public List<Rack> goodRacks(@PathVariable(value = "id") int id, HttpServletRequest request){
         String ra = request.getRemoteAddr();
         Authentication auth = authManager.checkSession(ra);
         if (auth != null) {
-            return rr.findAllByGoodId(id);
+            if(id==0)
+                return new ArrayList<>();
+            List <Rack> racks = rr.findAllByGoodId(id);
+            if(racks.size()>0){
+                return racks;
+            }
+            else{
+                racks=rr.findAllByGood(null);
+                racks.addAll(rr.findAllByNumber(0));
+                return racks;
+            }
         }else {
             throw new AccessDeniedException("get all racks binded on good with id", auth == null);
         }
@@ -348,9 +370,10 @@ public class AppController {
         Authentication auth = authManager.checkSession(ra);
         if (auth != null && auth.getRole().charAt(1)=='B' && auth.getRole().charAt(3)=='D') {
             Rack rack = rr.findByAddr(addr);
-            if(rack.getNumber()!=0)
+            if(!(rack.getNumber()==null||rack.getNumber()==0))
                 throw new UnsafeOperationException("Make sure that rack you want to bind is empty");
             rack.setGood(gr.findById(id).orElseThrow(() -> new NotFindException("goods with this id")));
+            rr.save(rack);
         }else {
             throw new AccessDeniedException("bind rack on good", auth == null);
         }
@@ -374,7 +397,7 @@ public class AppController {
                 gr.save(good);
             }
             or.save(new Outcoming(  //make record that query satisfied or not
-                    cr.findCredentialByEmail(auth.getLogin()).getUsercard(),
+                    cr.findCredentialByEmail(authManager.encrypt(auth.getLogin())).getUsercard(),
                     new Timestamp(System.currentTimeMillis()),
                     rack,
                     good,
@@ -399,7 +422,7 @@ public class AppController {
             rr.save(rack);
             gr.save(good);
             ir.save(new Incoming(  //make record that query satisfied or not
-                    cr.findCredentialByEmail(auth.getLogin()).getUsercard(),
+                    cr.findCredentialByEmail(authManager.encrypt(auth.getLogin())).getUsercard(),
                     new Timestamp(System.currentTimeMillis()),
                     rack,
                     good,
