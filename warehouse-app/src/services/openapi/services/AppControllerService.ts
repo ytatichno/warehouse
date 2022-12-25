@@ -165,22 +165,17 @@ requestBody: Good,
     }
 
     /**
-     * DEPRECATED!Manual adding good in goods table
-     * @param id 
+     * Adding new good in goods table, fields totalNumber and id will be ignored
      * @param requestBody 
      * @returns Good OK
      * @throws ApiError
      */
     public static newGood(
-id: number,
 requestBody: Good,
 ): CancelablePromise<Good> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/app/good-info/{id}',
-            path: {
-                'id': id,
-            },
+            url: '/app/good-info',
             body: requestBody,
             mediaType: 'application/json',
         });
@@ -274,7 +269,7 @@ addr: string,
     }
 
     /**
-     * get info about all racks binded on good with id
+     * get info about all racks binded on good with id and all empty racks if good hasn't binded racks
      * @param id 
      * @returns Rack OK
      * @throws ApiError
