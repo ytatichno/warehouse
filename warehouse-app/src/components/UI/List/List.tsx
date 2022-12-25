@@ -8,28 +8,41 @@ import { Rack, rackToString } from '../../../services/openapi/models/Rack';
 
 
 
-export function List<T extends Good|Usercard|Rack>(props: {title:string,content:CancelablePromise<T[]>}) {
-  let list:T[] = [];
-  const [items,setItems] = useState(list);
-  props.content.then(setItems);
+export function List<T extends Good|Usercard|Rack>(props: {title:string,content:T[],onClick:(event:any,items:T[])=>void}) {
+
+  
+
+
+  function generateOne(element:T,index:number,onClick:(event:Event,items:T[])=>void) {
+
+    return <div className={styles.wrapper}>
+      <div className={styles.item}>{stringFromT(element)}</div>
+      <div>
+        <button value={index} className={styles.button} onClick={(event:any)=>{
+        onClick(event,props.content);
+      }}>+</button>
+      </div>
+    </div>
+  }
   return (
     <div>
       <h3>{props.title}</h3>
       <div className={styles.List}>
-        {items.map(generateOne)}
+        {props.content.length>0?props.content.map((element:T,index:number)=>
+        {return generateOne(element,index,props.onClick)}):"Загрузка..."}
       </div>
     </div>
   );
 }
-function generateOne<T extends Good|Usercard|Rack>(element:T,index:number) {
-  let func = (element:T) => 'unrecognized'
-  if("totalnumber" in element)
-    func = goodToString;
-  else if("lastname" in element)
-    func = usercardToString;
-  else if("addr" in element)
-    func = rackToString;
-  return <div>{func(element)}</div>
+export function stringFromT<T extends Good|Usercard|Rack>(obj:T){
+  let func = (obj:T) => 'unrecognized'
+    if("totalnumber" in obj)
+      func = goodToString;
+    else if("lastname" in obj)
+      func = usercardToString;
+    else if("addr" in obj)
+      func = rackToString;
+    return func(obj);
 }
 
 // function elementToString(element:Good){

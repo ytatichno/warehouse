@@ -1,3 +1,25 @@
 .List{
-  background-color: lightblue;
+  background-color: rgb(177, 168, 127);
+  padding: 1rem;
+  border-radius: 0.4rem;
+  margin-top: 2%;
+}
+.wrapper{
+  display: flex;
+  margin: 0.8rem;
+  background-color: chocolate;
+  border-radius: 0.4rem;
+  padding: 0.2rem;
+}
+.item{
+  width: 97%;
+}
+.button{
+  border-radius: 0.4rem;
+}
+.selected{
+  background-color:#b6d4fe;
+}
+.unselected{
+  background-color: chocolate;
 }
