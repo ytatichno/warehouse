@@ -39,7 +39,7 @@ public class Rack {
     }
 
     public Integer getNumber() {
-        return number;
+        return number!=null?number:0;
     }
 
     public void setNumber(Integer number) {
