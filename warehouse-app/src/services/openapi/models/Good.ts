@@ -12,5 +12,5 @@ export type Good = {
     totalnumber?: number;
 };
 export function goodToString(el:Good){
-    return el.id + " : " + el.name + " : " + el.descr;
+    return el.name + " : " + el.totalnumber;
 }
