@@ -11,6 +11,7 @@
 
   top: 10%;
   left: 10%;
+  overflow: hidden;
 }
 .darkpanel{
   background-color: rgb(78, 78, 78);
@@ -31,7 +32,6 @@
   display:flex;
   line-height: normal;
   flex-wrap: wrap;
-
 }
 .naming{
   width: 35%;
@@ -60,7 +60,9 @@
   margin-bottom: 1rem;
 }
 .btn{
-  width: 10%;
+  min-width: 10%;
+  font-size: 1rem;
+  text-overflow: ellipsis;
 }
 
 @keyframes App-logo-float {

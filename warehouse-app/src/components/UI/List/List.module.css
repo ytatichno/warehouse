@@ -1,8 +1,10 @@
 .List{
-  background-color: rgb(177, 168, 127);
+  background-color: rgb(184, 183, 180);
   padding: 1rem;
   border-radius: 0.4rem;
   margin-top: 2%;
+  max-height: 45vh;
+  overflow-y: scroll;
 }
 .wrapper{
   display: flex;

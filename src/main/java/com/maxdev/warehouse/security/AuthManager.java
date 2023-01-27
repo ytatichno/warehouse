@@ -35,7 +35,8 @@ public class AuthManager {
 //        sessionsTable.add();
         rnd = new Random();
         enc = new StandardPBEStringEncryptor();
-        enc.setPassword(cr.findById(1).get().getEmail());
+//        enc.setPassword(cr.findById(1).get().getEmail());
+        enc.setPassword("meowmeowmeowmeow"); //should be replaced
         SaltGenerator sg = new SaltGenerator() {
             @Override
             public byte[] generateSalt(int lengthBytes) {

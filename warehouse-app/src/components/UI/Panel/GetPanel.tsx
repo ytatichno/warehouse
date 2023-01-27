@@ -55,9 +55,7 @@ export function GetPanel(props: {theme:string, close:()=>void}) {
               }}>Получить</Button>
             </div>
             </Alert>
-        
-            <List<Good> title="" content={goods.sort((a,b)=>a.name&&b.name?a.name.localeCompare(b.name):0)} onClick={getGood} />
-
+              <List<Good> title="" content={goods.sort((a,b)=>a.name&&b.name?a.name.localeCompare(b.name):0)} onClick={getGood} />
       </div>
     </Panel>
   );

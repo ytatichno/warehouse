@@ -31,7 +31,7 @@ function App() {
   const closeBtn = () =>{
     changeView('main');
   }
-  console.log('a');
+  // console.log('a');
   useEffect(()=>{
     AppControllerService.profile1().then(changeUser)  
   },[])

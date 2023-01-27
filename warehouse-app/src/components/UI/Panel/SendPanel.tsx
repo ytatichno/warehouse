@@ -41,8 +41,7 @@ export function SendPanel(props: {theme:string, close:()=>void}) {
     setRack(emptyRack);
     setChosen(items[Number(event.target.value)]);
     // const chosen:Good = items[Number(event.target.value)];
-    console.log("🚀 ~ file: GetPanel.tsx:19 ~ chosen", chosen);
-    console.log(chosen.name);
+    // console.log(chosen.name + ' ' + chosen.id);
 
     
   }
